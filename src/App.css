@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+
 .App {
   text-align: center;
 }
@@ -35,4 +37,17 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.logo,
+.logout {
+  background-color: transparent;
+  color: lightgrey;
+  margin-top: 7px;
+  font-size: 25px;
+  border: none;
+  outline: none;
+}
+.logout {
+  cursor: pointer;
 }
