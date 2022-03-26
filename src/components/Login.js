@@ -10,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { withCookies } from 'react-cookie';
 import { ERROR_CATCHED, FETCH_SUCCESS, INPUT_EDITED, START_FETCH, TOGGLE_MODE } from './actionTypes';
+import { CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -97,10 +98,60 @@ const loginReducer = (state, action) => {
   }
 };
 
-const Login = () => {
+const Login = (props) => {
   const classes = useStyles();
   const [state, dispatch] = useReducer(loginReducer, initialState);
-  return <div></div>;
+
+  const inputChangedLog = () => {};
+  const login = () => {};
+  const toggleView = () => {};
+  return (
+    <Container maxWidth='xs'>
+      <form onSubmit={login}>
+        <div className={classes.paper}>
+          {state.isLoading && <CircularProgress />}
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography variant='h5'>{state.isLoginView ? 'Login' : 'Register'}</Typography>
+          <TextField
+            variant='outlined'
+            margin='normal'
+            fullWidth
+            name='email'
+            label='Email'
+            value={state.credentialsLog.email}
+            onChange={inputChangedLog()}
+            autoFocus
+          />
+          <TextField
+            variant='outlined'
+            margin='normal'
+            fullWidth
+            name='password'
+            label='Password'
+            value={state.credentialsLog.password}
+            onChange={inputChangedLog()}
+            autoComplete='current-password'
+          />
+          <span className={classes.spanError}>{state.error}</span>
+          <Button
+            className={classes.submit}
+            type='submit'
+            disabled={!state.credentialsLog.password || !state.credentialsLog.email}
+            fullWidth
+            variant='contained'
+            color='primary'
+          >
+            {state.isLoginView ? 'Login' : 'Register'}
+          </Button>
+          <span onClick={() => toggleView()} className={classes.span}>
+            {state.isLoginView ? 'Create Account' : 'Back to Login'}
+          </span>
+        </div>
+      </form>
+    </Container>
+  );
 };
 
-export default Login;
+export default withCookies(Login);
