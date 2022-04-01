@@ -1,4 +1,5 @@
 import React, { useReducer } from 'react';
+import axios from 'axios';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -102,9 +103,38 @@ const Login = (props) => {
   const classes = useStyles();
   const [state, dispatch] = useReducer(loginReducer, initialState);
 
-  const inputChangedLog = () => {};
-  const login = () => {};
-  const toggleView = () => {};
+  const inputChangedLog = (e) => {
+    // const cred = state.credentialsLog;
+    // cred[e.target.name] = e.target.value;
+    dispatch({
+      type: INPUT_EDITED,
+      inputName: e.target.name,
+      payload: e.target.value,
+      // inputName: 'state.credentialsLog',
+      // payload: cred,
+    });
+  };
+  const login = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch({ type: START_FETCH });
+      if (!state.isLoginView)
+        await axios.post('http://127.0.0.1:8000/api/create/', state.credentialsLog, {
+          headers: { 'Content-Type': 'application/json' },
+        });
+      const res = await axios.post('http://127.0.0.1:8000/authen/jwt/create/', state.credentialsLog, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      props.cookies.set('jwt-token', res.data.access);
+      res.data.access ? (window.location.href = '/youtube') : (window.location.href = '/');
+      dispatch({ type: FETCH_SUCCESS });
+    } catch {
+      dispatch({ type: ERROR_CATCHED });
+    }
+  };
+  const toggleView = () => {
+    dispatch({ type: TOGGLE_MODE });
+  };
   return (
     <Container maxWidth='xs'>
       <form onSubmit={login}>
@@ -121,7 +151,7 @@ const Login = (props) => {
             name='email'
             label='Email'
             value={state.credentialsLog.email}
-            onChange={inputChangedLog()}
+            onChange={(e) => inputChangedLog(e)}
             autoFocus
           />
           <TextField
@@ -131,7 +161,7 @@ const Login = (props) => {
             name='password'
             label='Password'
             value={state.credentialsLog.password}
-            onChange={inputChangedLog()}
+            onChange={(e) => inputChangedLog(e)}
             autoComplete='current-password'
           />
           <span className={classes.spanError}>{state.error}</span>
