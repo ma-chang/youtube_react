@@ -99,6 +99,9 @@ const loginReducer = (state, action) => {
   }
 };
 
+const API_ENDPOINT = process.env.REACT_APP_API_ENDPOINT;
+const JWT_API_ENDPOINT = process.env.REACT_APP_JWT_API_ENDPOINT;
+
 const Login = (props) => {
   const classes = useStyles();
   const [state, dispatch] = useReducer(loginReducer, initialState);
@@ -119,10 +122,11 @@ const Login = (props) => {
     try {
       dispatch({ type: START_FETCH });
       if (!state.isLoginView)
-        await axios.post('http://127.0.0.1:8000/api/create/', state.credentialsLog, {
+        await axios.post(`${API_ENDPOINT}create/`, state.credentialsLog, {
           headers: { 'Content-Type': 'application/json' },
         });
-      const res = await axios.post('http://127.0.0.1:8000/authen/jwt/create/', state.credentialsLog, {
+      // console.log(state.credentialsLog);
+      const res = await axios.post(`${JWT_API_ENDPOINT}`, state.credentialsLog, {
         headers: { 'Content-Type': 'application/json' },
       });
       props.cookies.set('jwt-token', res.data.access);
