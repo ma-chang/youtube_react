@@ -25,6 +25,38 @@ const ApiContextProvider = (props) => {
     };
     getVideos();
   }, [token]);
+
+  const newVideos = async () => {
+    const uploadData = new FormData();
+    uploadData.append('title', title);
+    uploadData.append('video', video, video.name);
+    uploadData.append('thumbnail', thumbnail, thumbnail.name);
+    try {
+      const res = await axios.post(`${API_ENDPOINT}videos/`, uploadData, {
+        headers: { 'Content-Type': 'application/json', Authorization: `JWT ${token}` },
+      });
+      setVideos([...videos, res.data]);
+      setModelIsOpen(false);
+      setTitle('');
+      setVideo(null);
+      setThumbnail(null);
+    } catch {
+      console.log('error');
+    }
+  };
+
+  const deleteVideo = async () => {
+    try {
+      await axios.delete(`${API_ENDPOINT}videos/${selectedVideo.id}`, {
+        headers: { 'Content-Type': 'application/json', Authorization: `JWT ${token}` },
+      });
+      setSelectedVideo(null);
+      setVideos(videos.filter((item) => item.id !== selectedVideo.id));
+    } catch {
+      console.log('error');
+    }
+  };
+
   return <div></div>;
 };
 
