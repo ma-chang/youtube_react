@@ -20,13 +20,13 @@ const ApiContextProvider = (props) => {
         const res = await axios.get(`${API_ENDPOINT}videos/`, { headers: { Authorization: `JWT ${token}` } });
         setVideos(res.data);
       } catch {
-        console.log('error');
+        console.log('error: useEffect');
       }
     };
     getVideos();
   }, [token]);
 
-  const newVideos = async () => {
+  const newVideo = async () => {
     const uploadData = new FormData();
     uploadData.append('title', title);
     uploadData.append('video', video, video.name);
@@ -41,7 +41,7 @@ const ApiContextProvider = (props) => {
       setVideo(null);
       setThumbnail(null);
     } catch {
-      console.log('error');
+      console.log('error: newVideos');
     }
   };
 
@@ -53,11 +53,63 @@ const ApiContextProvider = (props) => {
       setSelectedVideo(null);
       setVideos(videos.filter((item) => item.id !== selectedVideo.id));
     } catch {
-      console.log('error');
+      console.log('error: deleteVideo');
     }
   };
 
-  return <div></div>;
+  const incrementLike = async () => {
+    try {
+      const uploadData = new FormData();
+      uploadData.append('like', selectedVideo.like + 1);
+
+      const res = await axios.patch(`${API_ENDPOINT}videos/${selectedVideo.id}`, {
+        headers: { 'Content-Type': 'application/json', Authorization: `JWT ${token}` },
+      });
+      setSelectedVideo({ ...selectedVideo, like: res.data.like });
+      setVideo(videos.filter((item) => (item.id === selectedVideo.id ? res.data : item)));
+    } catch {
+      console.log('error: incrementLike');
+    }
+  };
+  const incrementDislike = async () => {
+    try {
+      const uploadData = new FormData();
+      uploadData.append('dislike', selectedVideo.dislike + 1);
+
+      const res = await axios.patch(`${API_ENDPOINT}videos/${selectedVideo.id}`, {
+        headers: { 'Content-Type': 'application/json', Authorization: `JWT ${token}` },
+      });
+      setSelectedVideo({ ...selectedVideo, dislike: res.data.dislike });
+      setVideo(videos.filter((item) => (item.id === selectedVideo.id ? res.data : item)));
+    } catch {
+      console.log('error: incrementDislike');
+    }
+  };
+
+  return (
+    <ApiContext.Provider
+      value={{
+        videos,
+        setVideos,
+        title,
+        setTitle,
+        video,
+        setVideo,
+        thumbnail,
+        setThumbnail,
+        selectedVideo,
+        setSelectedVideo,
+        modelIsOpen,
+        setModelIsOpen,
+        newVideo,
+        deleteVideo,
+        incrementLike,
+        incrementDislike,
+      }}
+    >
+      {props.children}
+    </ApiContext.Provider>
+  );
 };
 
 export default withCookies(ApiContextProvider);
