@@ -14,7 +14,7 @@ const ApiContextProvider = (props) => {
   const [video, setVideo] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [modelIsOpen, setModelIsOpen] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   useEffect(() => {
     const getVideos = async () => {
       try {
@@ -37,7 +37,7 @@ const ApiContextProvider = (props) => {
         headers: { 'Content-Type': 'application/json', Authorization: `JWT ${token}` },
       });
       setVideos([...videos, res.data]);
-      setModelIsOpen(false);
+      setModalIsOpen(false);
       setTitle('');
       setVideo(null);
       setThumbnail(null);
@@ -100,8 +100,8 @@ const ApiContextProvider = (props) => {
         setThumbnail,
         selectedVideo,
         setSelectedVideo,
-        modelIsOpen,
-        setModelIsOpen,
+        modalIsOpen,
+        setModalIsOpen,
         newVideo,
         deleteVideo,
         incrementLike,
