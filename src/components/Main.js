@@ -81,6 +81,7 @@ const Main = () => {
           <IconButton onClick={handleEditPicture}>
             <BsImages className='photo' />
           </IconButton>
+          <br />
           {/* upload button */}
           {title && video && thumbnail && (
             <button className='btn-modal' onClick={() => newVideo()}>
