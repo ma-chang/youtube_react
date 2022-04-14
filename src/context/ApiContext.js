@@ -48,7 +48,7 @@ const ApiContextProvider = (props) => {
 
   const deleteVideo = async () => {
     try {
-      await axios.delete(`${API_ENDPOINT}videos/${selectedVideo.id}`, {
+      await axios.delete(`${API_ENDPOINT}videos/${selectedVideo.id}/`, {
         headers: { 'Content-Type': 'application/json', Authorization: `JWT ${token}` },
       });
       setSelectedVideo(null);
@@ -62,8 +62,7 @@ const ApiContextProvider = (props) => {
     try {
       const uploadData = new FormData();
       uploadData.append('like', selectedVideo.like + 1);
-
-      const res = await axios.patch(`${API_ENDPOINT}videos/${selectedVideo.id}`, {
+      const res = await axios.patch(`${API_ENDPOINT}videos/${selectedVideo.id}/`, uploadData, {
         headers: { 'Content-Type': 'application/json', Authorization: `JWT ${token}` },
       });
       setSelectedVideo({ ...selectedVideo, like: res.data.like });
@@ -77,7 +76,7 @@ const ApiContextProvider = (props) => {
       const uploadData = new FormData();
       uploadData.append('dislike', selectedVideo.dislike + 1);
 
-      const res = await axios.patch(`${API_ENDPOINT}videos/${selectedVideo.id}`, {
+      const res = await axios.patch(`${API_ENDPOINT}videos/${selectedVideo.id}/`, uploadData, {
         headers: { 'Content-Type': 'application/json', Authorization: `JWT ${token}` },
       });
       setSelectedVideo({ ...selectedVideo, dislike: res.data.dislike });
